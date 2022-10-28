@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import IconButton from "@mui/material/IconButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Divider from "@mui/material/Divider";
@@ -18,19 +18,38 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import { ChatState } from "../../context/ChatProvider";
 import GroupChatModal from "./GroupChatModal";
+import { getSender } from "../../utils/chatLogics";
+import Fade from "@mui/material/Fade";
+import { format } from "date-fns";
+import Snackbar from "@mui/material/Snackbar";
+import { SnackbarContent } from "@mui/material";
 
 const ChatIcons = () => {
-  const { setError, setSelectedChat } = ChatState();
+  const { setError, setSelectedChat, notification, setNotification } =
+    ChatState();
   const user = useSelector((state) => state.user);
   let navigate = useNavigate();
   const dispatch = useDispatch();
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEll, setAnchorEll] = useState(null);
   const open = Boolean(anchorEl);
+  const open1 = Boolean(anchorEll);
+  const [snackbarState, setSnackbarState] = useState(false);
+  const snackbarOpen = Boolean(snackbarState);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+  const handleClick1 = (event) => {
+    setAnchorEll(event.currentTarget);
+  };
+
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleClose1 = () => {
+    setAnchorEll(null);
   };
 
   const onLogOut = async () => {
@@ -51,8 +70,65 @@ const ChatIcons = () => {
     return;
   };
 
+  const handleSnackbarClick = () => {
+    setSelectedChat(notification[0].chat);
+    setSnackbarState(false);
+    setNotification(
+      notification.filter((n) => n.chat._id !== notification[0].chat._id)
+    );
+  };
+
+  useEffect(() => {
+    setSnackbarState(true);
+    setTimeout(() => {
+      setSnackbarState(false);
+    }, 5000);
+  }, [notification]);
+
+  console.log("notification: ", notification);
+
   return (
     <>
+      {notification.length > 0 && (
+        <Snackbar
+          anchorOrigin={{ horizontal: "right", vertical: "top" }}
+          // open={snackbarOpen}
+          open={true}
+          onClick={handleSnackbarClick}
+          TransitionComponent={Fade}
+        >
+          <SnackbarContent
+            sx={{
+              backgroundColor: "#b26362",
+              overflow: "hidden",
+            }}
+            message={
+              <>
+                <strong
+                  style={{
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {`${notification[0].sender.name}` +
+                    (notification[0].chat.isGroupChat
+                      ? ` - (${notification[0].chat.chatName})`
+                      : "")}
+                </strong>
+                <div
+                  style={{
+                    width: "280px",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {`${notification[0].content}`}
+                </div>
+              </>
+            }
+          />
+        </Snackbar>
+      )}
       <div>
         <IconButton
           aria-label='account of current user'
@@ -64,17 +140,26 @@ const ChatIcons = () => {
             <GroupAddIcon color='action' />
           </GroupChatModal>
         </IconButton>
+        <Tooltip title='Notifications'>
+          <IconButton
+            aria-label='notifications for current user'
+            color='inherit'
+            onClick={handleClick1}
+            aria-controls={open1 ? "notifications-menu" : undefined}
+            aria-haspopup='true'
+            aria-expanded={open1 ? "true" : undefined}
+            style={{ marginRight: "8px" }}
+          >
+            <Badge
+              variant={notification.length > 0 ? "dot" : ""}
+              color='error'
+              overlap='circular'
+            >
+              <NotificationsIcon color='action' />
+            </Badge>
+          </IconButton>
+        </Tooltip>
 
-        <IconButton
-          aria-label='account of current user'
-          aria-haspopup='true'
-          color='inherit'
-          style={{ marginRight: "8px" }}
-        >
-          <Badge variant='dot' color='error' overlap='circular'>
-            <NotificationsIcon color='action' />
-          </Badge>
-        </IconButton>
         <Tooltip title='Account settings'>
           <IconButton
             size='large'
@@ -90,8 +175,8 @@ const ChatIcons = () => {
                 src={user.profilePicture}
                 style={{
                   borderRadius: "50%",
-                  height: "36px",
-                  width: "36px",
+                  height: "40px",
+                  width: "40px",
                   display: "cover",
                   border: "2px solid white",
                   objectFit: "cover",
@@ -99,7 +184,10 @@ const ChatIcons = () => {
               ></img>
             )}
             {user && user.profilePicture === "" && (
-              <Avatar sx={{ bgcolor: "pink" }} fontSize='large'>
+              <Avatar
+                sx={{ bgcolor: "pink", border: "2px solid white" }}
+                fontSize='large'
+              >
                 {user.name[0]}
               </Avatar>
             )}
@@ -167,6 +255,64 @@ const ChatIcons = () => {
             Login
           </MenuItem>
         )}
+      </Menu>
+
+      <Menu
+        anchorEl={anchorEll}
+        id='notifications-menu'
+        open={open1}
+        onClose={handleClose1}
+        onClick={handleClose1}
+        PaperProps={{
+          elevation: 0,
+          sx: {
+            overflow: "scroll",
+            maxHeight: "210px",
+            filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+            mt: 1.5,
+            "&:before": {
+              content: '""',
+              display: "block",
+              position: "absolute",
+              top: 0,
+              right: 14,
+              width: 10,
+              height: 10,
+              bgcolor: "background.paper",
+              transform: "translateY(-50%) rotate(45deg)",
+              zIndex: 0,
+            },
+          },
+        }}
+        transformOrigin={{ horizontal: "right", vertical: "top" }}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+      >
+        {notification.length === 0 && <MenuItem>No Notifications</MenuItem>}
+        {notification.map((notif) => (
+          <MenuItem
+            key={notif._id}
+            onClick={() => {
+              setSelectedChat(notif.chat);
+              setNotification(
+                notification.filter((n) => n.chat._id !== notif.chat._id)
+              );
+            }}
+          >
+            <span>
+              {notif.chat.isGroupChat ? (
+                <>
+                  {`New Message in ${notif.chat.chatName} @ ` +
+                    format(new Date(notif.createdAt), "H:mma")}
+                </>
+              ) : (
+                <>
+                  {`New message from ${getSender(user, notif.chat.users)} @ ` +
+                    format(new Date(notif.createdAt), "H:mma")}
+                </>
+              )}
+            </span>
+          </MenuItem>
+        ))}
       </Menu>
     </>
   );

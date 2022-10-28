@@ -7,18 +7,14 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { signOut } from "../../redux-state/userSlice";
 import { Avatar, AvatarGroup } from "@mui/material";
+import Badge from "@mui/material/Badge";
 
-const Chats = ({ fetchAgain }) => {
+const Chats = ({ fetchAgain, setFetchAgain }) => {
   let navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
-  const {
-    selectedChat,
-    setSelectedChat,
-    chats,
-    setChats,
-    setChatSelectRefresh,
-  } = ChatState();
+  const { selectedChat, setSelectedChat, chats, setChats, notification } =
+    ChatState();
 
   const fetchChats = async () => {
     try {
@@ -38,11 +34,8 @@ const Chats = ({ fetchAgain }) => {
   }, [fetchAgain]);
 
   const handleSelect = async (chat) => {
-    setChatSelectRefresh(false);
+    fetchChats();
     setSelectedChat(chat);
-    setTimeout(() => {
-      setChatSelectRefresh(true);
-    }, 1);
   };
   console.log("chats: ", chats);
 
@@ -59,18 +52,38 @@ const Chats = ({ fetchAgain }) => {
                 backgroundColor: selectedChat._id === chat._id && "#b26362",
               }}
             >
-              <AvatarGroup max={3} spacing='small' className='userAvatars'>
-                {chat.users
-                  .filter((u) => u._id !== user.id)
-                  .map((member) => (
-                    <Avatar
-                      key={member._id}
-                      style={{ border: "2px solid white" }}
-                      alt={member.name}
-                      src={member.profilePicture}
-                    />
-                  ))}
-              </AvatarGroup>
+              <Badge
+                badgeContent={
+                  notification.filter((notif) => notif.chat._id === chat._id)
+                    .length
+                }
+                color='error'
+                overlap='circular'
+                max={99}
+                sx={{ padding: "0px 4px" }}
+              >
+                <AvatarGroup max={3} spacing='small'>
+                  {chat.users
+                    .filter((u) => u._id !== user.id)
+                    .map((member) => (
+                      <Avatar
+                        className='userAvatars'
+                        key={member._id}
+                        style={{
+                          border: "2px solid white",
+                          backgroundColor:
+                            member.profilePicture === "" ? "pink" : "",
+                        }}
+                        alt={member.name}
+                        src={
+                          member.profilePicture === ""
+                            ? member.name[0]
+                            : member.profilePicture
+                        }
+                      />
+                    ))}
+                </AvatarGroup>
+              </Badge>
 
               <div className='userChatInfo'>
                 <span>

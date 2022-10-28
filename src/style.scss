@@ -52,6 +52,12 @@
   }
 }
 
+#notifications-menu {
+  ::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 .home {
   height: 100vh;
   display: flex;
@@ -120,15 +126,11 @@
           gap: 10px;
           color: white;
           cursor: pointer;
-          width: 100%;
+          width: calc(100% - 20px);
+          border-bottom: 1px solid #b26362;
 
           &:hover {
             background-color: #b26362;
-          }
-
-          .userAvatars {
-            flex: 1;
-            object-fit: cover;
           }
 
           .userChatInfo {
@@ -150,6 +152,9 @@
               color: lightgray;
               margin-top: 3px;
               margin-bottom: 3px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              height: 1rem;
             }
           }
         }
@@ -204,6 +209,10 @@
         justify-content: space-between;
       }
 
+      ::-webkit-scrollbar {
+        display: none;
+      }
+
       .messages {
         background-color: #f8e8e8;
         padding: 10px;
@@ -212,29 +221,25 @@
 
         .message {
           display: flex;
-          gap: 20px;
+          gap: 15px;
           margin-bottom: 5px;
 
           .messageInfo {
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
             color: gray;
             font-weight: 300;
             font-size: x-small;
-            // padding: 0px;
             width: 42px;
 
             img {
-              width: 45px;
-              height: 45px;
+              width: 40px;
+              height: 40px;
               border-radius: 50%;
               object-fit: cover;
               border: 2px solid white;
-              margin-top: 5px;
-            }
-
-            span {
-              margin: 4px 4px;
+              //   margin-top: 5px;
             }
           }
 
@@ -242,14 +247,24 @@
             max-width: 80%;
             display: flex;
             flex-direction: column;
-            gap: 10px;
 
-            p {
+            .messageText {
               background-color: white;
-              padding: 10px 20px;
+              padding: 5px 10px 5px 10px;
               border-radius: 0px 10px 10px 10px;
-              max-width: max-content;
+              max-width: 100%;
               margin: 2px 0px;
+              font-weight: 400;
+              overflow-wrap: break-word;
+              margin-right: 70px;
+            }
+
+            span {
+              font-size: 10px;
+              font-weight: 200;
+              display: flex;
+              flex-direction: column;
+              text-align: start;
             }
 
             img {
@@ -259,14 +274,24 @@
 
           &.owner {
             flex-direction: row-reverse;
+            gap: 10px;
 
             .messageContent {
-              align-items: flex-end;
-              p {
+              //   display: flex;
+              //   flex-direction: column;
+              //   gap: 10px;
+              max-width: 80%;
+
+              .messageText {
                 background-color: #b2684d;
                 color: white;
                 font-weight: 400;
                 border-radius: 10px 0px 10px 10px;
+                max-width: 100%;
+                margin: 1px 10px;
+                padding: 5px 10px 5px 10px;
+                overflow-wrap: break-word;
+                margin-left: 70px;
               }
             }
           }
@@ -301,7 +326,7 @@
       }
 
       .chatPlaceholder {
-        height: calc(100% - 105px);
+        height: calc(100% - 225px);
         width: 80%;
         display: flex;
         flex-direction: column;

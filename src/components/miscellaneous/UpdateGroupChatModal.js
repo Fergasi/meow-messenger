@@ -359,9 +359,17 @@ const UpdateGroupChatModal = ({
                     <div className='userChat'>
                       <Avatar
                         key={result._id}
-                        style={{ border: "2px solid white" }}
+                        style={{
+                          border: "2px solid white",
+                          backgroundColor:
+                            result.profilePicture === "" ? "pink" : "",
+                        }}
                         alt={result.name}
-                        src={result.profilePicture}
+                        src={
+                          result.profilePicture === ""
+                            ? result.name[0]
+                            : result.profilePicture
+                        }
                       />
                       <div className='userChatInfo'>
                         <span>{result.name}</span>

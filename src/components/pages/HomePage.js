@@ -24,7 +24,7 @@ const HomePage = () => {
       <div className='home'>
         {user && (
           <div className='container'>
-            <Sidebar fetchAgain={fetchAgain} />
+            <Sidebar fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
             <Chat fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
           </div>
         )}

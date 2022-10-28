@@ -13,7 +13,7 @@ import { LinearProgress } from "@mui/material";
 import { CircularProgress } from "@mui/material";
 import { Avatar } from "@mui/material";
 
-const Sidebar = ({ fetchAgain }) => {
+const Sidebar = ({ fetchAgain, setFetchAgain }) => {
   const user = useSelector((state) => state.user);
   let navigate = useNavigate();
   const dispatch = useDispatch();
@@ -99,14 +99,14 @@ const Sidebar = ({ fetchAgain }) => {
           <input
             value={search}
             type='text'
-            placeholder='find a user...'
+            placeholder='Search users...'
             onChange={(e) => {
               setSearch(e.target.value);
             }}
           />
           {loading && (
             <CircularProgress
-              size={18}
+              size='15px'
               color='secondary'
               sx={{ marginRight: "10px" }}
             />
@@ -136,9 +136,16 @@ const Sidebar = ({ fetchAgain }) => {
               <div className='userChat'>
                 <Avatar
                   key={result._id}
-                  style={{ border: "2px solid white" }}
+                  style={{
+                    border: "2px solid white",
+                    backgroundColor: result.profilePicture === "" ? "pink" : "",
+                  }}
                   alt={result.name}
-                  src={result.profilePicture}
+                  src={
+                    result.profilePicture === ""
+                      ? result.name[0]
+                      : result.profilePicture
+                  }
                 />
                 <div className='userChatInfo'>
                   <span>{result.name}</span>
@@ -148,7 +155,7 @@ const Sidebar = ({ fetchAgain }) => {
             </div> //Chat loading bar possibly unnecessary
           ))}
 
-        <Chats fetchAgain={fetchAgain} />
+        <Chats fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
       </div>
     </div>
   );

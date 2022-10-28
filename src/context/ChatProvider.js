@@ -7,7 +7,6 @@ const ChatProvider = ({ children }) => {
   const [notification, setNotification] = useState([]);
   const [chats, setChats] = useState([]);
   const [error, setError] = useState({ status: false, message: "" });
-  const [chatSelectRefresh, setChatSelectRefresh] = useState(true);
   const [messages, setMessages] = useState([]);
   const [typing, setTyping] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
@@ -24,8 +23,6 @@ const ChatProvider = ({ children }) => {
         setChats,
         error,
         setError,
-        chatSelectRefresh,
-        setChatSelectRefresh,
         messages,
         setMessages,
         typing,

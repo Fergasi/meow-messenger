@@ -55,7 +55,7 @@ const ProfileModal = ({ user, children }) => {
             justifyContent='space=between'
             width='100%'
           >
-            {user.profilePicture ? (
+            {user.profilePicture !== "" ? (
               <img
                 src={user.profilePicture}
                 style={{
@@ -63,6 +63,7 @@ const ProfileModal = ({ user, children }) => {
                   width: "150px",
                   objectFit: "cover",
                   borderRadius: "50%",
+                  border: "2px solid white",
                 }}
               ></img>
             ) : (
@@ -70,8 +71,13 @@ const ProfileModal = ({ user, children }) => {
                 style={{
                   height: "150px",
                   width: "150px",
+                  backgroundColor: "pink",
+                  fontSize: "60px",
+                  border: "2px solid white",
                 }}
-              ></Avatar>
+              >
+                {user.name[0]}
+              </Avatar>
             )}
             <br />
             <Typography fontWeight='bold' fontSize='larger'>

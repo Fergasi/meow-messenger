@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Messages from "./Messages";
 import Input from "./Input";
 import ChatIcons from "./ChatIcons";
@@ -15,7 +15,7 @@ import ProfileModal from "../miscellaneous/ProfileModal";
 import UpdateGroupChatModal from "../miscellaneous/UpdateGroupChatModal";
 import Axios from "../../utils/Axios";
 import { CircularProgress } from "@mui/material";
-import LoadingPaws from "../../animations/LoadingPaws";
+import debounce from "lodash.debounce";
 
 import io from "socket.io-client";
 const ENDPOINT = "http://localhost:3020";
@@ -27,16 +27,15 @@ const Chat = ({ fetchAgain, setFetchAgain }) => {
     error,
     setError,
     selectedChat,
-    setSelectedChat,
-    chatSelectRefresh,
     messages,
     setMessages,
     setTyping,
     typing,
-    isTyping,
     setIsTyping,
     newMessage,
     setNewMessage,
+    notification,
+    setNotification,
   } = ChatState();
   const [loading, setLoading] = useState(false);
   const [socketConnected, setSocketConnected] = useState(false);
@@ -50,11 +49,10 @@ const Chat = ({ fetchAgain, setFetchAgain }) => {
       const { data } = await Axios.get(`/api/message/${selectedChat._id}`);
 
       console.log("messages: ", messages);
+      console.log("its here!!!: ", data);
       setMessages(data);
       setLoading(false);
       socket.emit("join chat", selectedChat._id);
-
-      //   socket.emit("join chat", selectedChat._id);
     } catch (error) {
       setError({ status: true, message: "Failed to load messages" });
       setTimeout(() => {
@@ -69,6 +67,7 @@ const Chat = ({ fetchAgain, setFetchAgain }) => {
       (event.key === "Enter" && newMessage) ||
       (event.type === "click" && newMessage)
     ) {
+      console.log("click activiy");
       socket.emit("stop typing", selectedChat._id);
       setTyping(false);
       try {
@@ -79,7 +78,6 @@ const Chat = ({ fetchAgain, setFetchAgain }) => {
 
         setNewMessage("");
         setMessages([...messages, data]);
-        console.log("data!!!: ", data);
         socket.emit("new message", data);
         setFetchAgain(!fetchAgain);
       } catch (e) {
@@ -105,20 +103,36 @@ const Chat = ({ fetchAgain, setFetchAgain }) => {
     selectedChatCompare = selectedChat;
   }, [selectedChat]);
 
+  //   useEffect(() => {
+  //     fetchMessages();
+  //   }, [fetchAgain]);
+
   useEffect(() => {
     socket.on("message recieved", (newMessageRecieved) => {
+      console.log("message recieved: ", newMessageRecieved);
+      console.log("messagesInEffect: ", messages);
       if (
         !selectedChatCompare ||
         selectedChatCompare._id !== newMessageRecieved.chat._id
       ) {
-        //create notification
+        if (!notification.includes(newMessageRecieved)) {
+          setNotification([newMessageRecieved, ...notification]);
+        }
         setFetchAgain(!fetchAgain);
       } else {
+        console.log("selecteChatCompare: ", selectedChatCompare);
         setMessages([...messages, newMessageRecieved]);
-        setFetchAgain(!fetchAgain);
+        setFetchAgain(!fetchAgain); //might be where random bug lives
       }
     });
   });
+
+  const pawsHandler = () => {
+    socket.emit("stop typing", selectedChat._id);
+    setTyping(false);
+    console.log("paws Off!");
+  };
+  const debouncedPawsHandler = useCallback(debounce(pawsHandler, 2000), []);
 
   const typingHandler = (e) => {
     setNewMessage(e.target.value);
@@ -132,16 +146,7 @@ const Chat = ({ fetchAgain, setFetchAgain }) => {
       socket.emit("typing", selectedChat._id);
     }
 
-    let lastTypingTime = new Date().getTime();
-    var timerLength = 3000;
-    setTimeout(() => {
-      var timeNow = new Date().getTime();
-      var timeDiff = timeNow - lastTypingTime;
-      if (timeDiff >= timerLength && typing) {
-        socket.emit("stop typing", selectedChat._id);
-        setTyping(false);
-      }
-    }, timerLength);
+    debouncedPawsHandler();
   };
 
   return (
@@ -154,8 +159,7 @@ const Chat = ({ fetchAgain, setFetchAgain }) => {
               : selectedChat.chatName}
           </p>
 
-          {chatSelectRefresh &&
-            messages &&
+          {messages &&
             selectedChat.users &&
             (!selectedChat.isGroupChat ? (
               <IconButton>

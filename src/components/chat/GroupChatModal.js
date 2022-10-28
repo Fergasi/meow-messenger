@@ -202,7 +202,7 @@ const GroupChatModal = ({ children }) => {
               />
             </FormControl>
             <FormControl sx={{ m: 1, width: "100%" }} variant='outlined'>
-              <InputLabel>Add Users</InputLabel>
+              <InputLabel>Search Users...</InputLabel>
               <OutlinedInput
                 id='input-name'
                 value={search}
@@ -244,9 +244,12 @@ const GroupChatModal = ({ children }) => {
                         height: "18px",
                         width: "18px",
                         marginRight: "5px",
+                        backgroundColor: u.profilePicture === "" ? "pink" : "",
                       }}
                       alt={u.name}
-                      src={u.profilePicture}
+                      src={
+                        u.profilePicture === "" ? u.name[0] : u.profilePicture
+                      }
                     />
                     {u.name}
                     {user._id === u._id ? (
@@ -285,13 +288,19 @@ const GroupChatModal = ({ children }) => {
                       <Avatar
                         key={result._id}
                         style={{
-                          height: "40px",
-                          width: "40px",
+                          height: "44px",
+                          width: "44px",
                           border: "2px solid white",
                           objectFit: "cover",
+                          backgroundColor:
+                            result.profilePicture === "" ? "pink" : "",
                         }}
                         alt={result.name}
-                        src={result.profilePicture}
+                        src={
+                          result.profilePicture === ""
+                            ? result.name[0]
+                            : result.profilePicture
+                        }
                       />
                       <div className='userChatInfo'>
                         <span>{result.name}</span>
@@ -324,7 +333,7 @@ const GroupChatModal = ({ children }) => {
                 borderTopLeftRadius: "0px",
                 borderTopRightRadius: "0px",
                 marginLeft: "-33px",
-                marginTop: "20px",
+                marginTop: "26px",
               }}
             >
               {error.message}

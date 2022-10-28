@@ -25,7 +25,6 @@ const Message = ({ message, messages, i }) => {
       </div>
       <div className='messageContent'>
         <p>{message.content}</p>
-        {/* img */}
       </div>
     </div>
   );
