@@ -4,6 +4,10 @@
   }
 }
 
+.EmojiPickerReact {
+  --epr-emoji-size: 20px;
+}
+
 .modalCreateChat {
   .searchedChats {
     border-bottom: 1px solid gray;
@@ -164,6 +168,17 @@
       flex: 2;
       position: relative;
       width: 65%;
+
+      .EmojiPickerReact {
+        --epr-emoji-size: 20px;
+        --epr-category-icon-active-color: transparent;
+        --epr-highlight-color: #b26362;
+        --epr-category-label-height: 30px;
+        div.epr-category-nav {
+          padding: 5px;
+          padding-top: 10px;
+        }
+      }
 
       .chatInfo {
         width: calc(100% - 27px);

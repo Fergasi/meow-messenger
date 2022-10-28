@@ -222,6 +222,7 @@ const Chat = ({ fetchAgain, setFetchAgain }) => {
             sendMessage={sendMessage}
             typingHandler={typingHandler}
             newMessage={newMessage}
+            setNewMessage={setNewMessage}
           />
         </>
       ) : (
