@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import IconButton from "@mui/material/IconButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Divider from "@mui/material/Divider";
@@ -23,10 +23,17 @@ import Fade from "@mui/material/Fade";
 import { format } from "date-fns";
 import Snackbar from "@mui/material/Snackbar";
 import { SnackbarContent } from "@mui/material";
+import debounce from "lodash.debounce";
 
 const ChatIcons = () => {
-  const { setError, setSelectedChat, notification, setNotification } =
-    ChatState();
+  const {
+    setError,
+    setSelectedChat,
+    notification,
+    setNotification,
+    newNotif,
+    setNewNotif,
+  } = ChatState();
   const user = useSelector((state) => state.user);
   let navigate = useNavigate();
   const dispatch = useDispatch();
@@ -71,19 +78,25 @@ const ChatIcons = () => {
   };
 
   const handleSnackbarClick = () => {
-    setSelectedChat(notification[0].chat);
     setSnackbarState(false);
-    setNotification(
-      notification.filter((n) => n.chat._id !== notification[0].chat._id)
-    );
+    setSelectedChat(notification[0].chat);
+    setTimeout(() => {
+      setNotification(
+        notification.filter((n) => n.chat._id !== notification[0].chat._id)
+      );
+    }, 500);
   };
+
+  const snackBarExec = () => {
+    setSnackbarState(false);
+  };
+
+  const debounceSnackbarFunc = useCallback(debounce(snackBarExec, 4000), []);
 
   useEffect(() => {
     setSnackbarState(true);
-    setTimeout(() => {
-      setSnackbarState(false);
-    }, 5000);
-  }, [notification]);
+    debounceSnackbarFunc();
+  }, [newNotif]);
 
   console.log("notification: ", notification);
 
@@ -92,8 +105,7 @@ const ChatIcons = () => {
       {notification.length > 0 && (
         <Snackbar
           anchorOrigin={{ horizontal: "right", vertical: "top" }}
-          // open={snackbarOpen}
-          open={true}
+          open={snackbarOpen}
           onClick={handleSnackbarClick}
           TransitionComponent={Fade}
         >
@@ -205,7 +217,7 @@ const ChatIcons = () => {
           sx: {
             overflow: "visible",
             filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-            mt: 1.5,
+            mt: 1,
             "& .MuiAvatar-root": {
               width: 32,
               height: 32,
@@ -232,12 +244,12 @@ const ChatIcons = () => {
         <MenuItem>
           <Avatar /> Profile
         </MenuItem>
-        <MenuItem /* onClick={() => navigate("/")}*/>
+        {/* <MenuItem >
           <ListItemIcon>
             <SettingsIcon fontSize='small' />
           </ListItemIcon>
           Settings
-        </MenuItem>
+        </MenuItem> */}
         <Divider />
         {user && (
           <MenuItem onClick={onLogOut}>
@@ -269,19 +281,8 @@ const ChatIcons = () => {
             overflow: "scroll",
             maxHeight: "210px",
             filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-            mt: 1.5,
-            "&:before": {
-              content: '""',
-              display: "block",
-              position: "absolute",
-              top: 0,
-              right: 14,
-              width: 10,
-              height: 10,
-              bgcolor: "background.paper",
-              transform: "translateY(-50%) rotate(45deg)",
-              zIndex: 0,
-            },
+            mt: 1.6,
+            marginLeft: "83px",
           },
         }}
         transformOrigin={{ horizontal: "right", vertical: "top" }}

@@ -11,6 +11,7 @@ const ChatProvider = ({ children }) => {
   const [typing, setTyping] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [newMessage, setNewMessage] = useState("");
+  const [newNotif, setNewNotif] = useState(false);
 
   return (
     <ChatContext.Provider
@@ -31,6 +32,8 @@ const ChatProvider = ({ children }) => {
         setIsTyping,
         newMessage,
         setNewMessage,
+        newNotif,
+        setNewNotif,
       }}
     >
       {children}

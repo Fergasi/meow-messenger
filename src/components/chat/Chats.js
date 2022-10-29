@@ -13,8 +13,14 @@ const Chats = ({ fetchAgain, setFetchAgain }) => {
   let navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
-  const { selectedChat, setSelectedChat, chats, setChats, notification } =
-    ChatState();
+  const {
+    selectedChat,
+    setSelectedChat,
+    chats,
+    setChats,
+    notification,
+    setNotification,
+  } = ChatState();
 
   const fetchChats = async () => {
     try {
@@ -36,6 +42,11 @@ const Chats = ({ fetchAgain, setFetchAgain }) => {
   const handleSelect = async (chat) => {
     fetchChats();
     setSelectedChat(chat);
+    notification.map((notif) => {
+      if (notif.chat._id === chat._id) {
+        setNotification(notification.filter((n) => n.chat._id !== chat._id));
+      }
+    });
   };
   console.log("chats: ", chats);
 

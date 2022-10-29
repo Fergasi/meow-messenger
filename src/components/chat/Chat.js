@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import Messages from "./Messages";
 import Input from "./Input";
 import ChatIcons from "./ChatIcons";
@@ -15,8 +15,7 @@ import ProfileModal from "../miscellaneous/ProfileModal";
 import UpdateGroupChatModal from "../miscellaneous/UpdateGroupChatModal";
 import Axios from "../../utils/Axios";
 import { CircularProgress } from "@mui/material";
-import debounce from "lodash.debounce";
-
+import { debounce } from "lodash";
 import io from "socket.io-client";
 const ENDPOINT = "http://localhost:3020";
 var socket, selectedChatCompare;
@@ -36,9 +35,12 @@ const Chat = ({ fetchAgain, setFetchAgain }) => {
     setNewMessage,
     notification,
     setNotification,
+    newNotif,
+    setNewNotif,
   } = ChatState();
   const [loading, setLoading] = useState(false);
   const [socketConnected, setSocketConnected] = useState(false);
+  console.log("SELECTEDCHAT: ", selectedChat);
 
   const fetchMessages = async () => {
     if (!selectedChat.users) return;
@@ -93,8 +95,6 @@ const Chat = ({ fetchAgain, setFetchAgain }) => {
     socket = io(ENDPOINT);
     socket.emit("setup", user.id);
     socket.on("connected", () => setSocketConnected(true));
-    socket.on("typing", () => setIsTyping(true));
-    socket.on("stop typing", () => setIsTyping(false));
   }, []);
 
   useEffect(() => {
@@ -103,9 +103,16 @@ const Chat = ({ fetchAgain, setFetchAgain }) => {
     selectedChatCompare = selectedChat;
   }, [selectedChat]);
 
-  //   useEffect(() => {
-  //     fetchMessages();
-  //   }, [fetchAgain]);
+  useEffect(() => {
+    socket.on("typing", (roomId) => {
+      console.log("roomId: ", roomId);
+      console.log("selectedChatId: ", selectedChat);
+      if (selectedChat._id === roomId) {
+        setIsTyping(true);
+      }
+    });
+    socket.on("stop typing", () => setIsTyping(false));
+  });
 
   useEffect(() => {
     socket.on("message recieved", (newMessageRecieved) => {
@@ -118,6 +125,7 @@ const Chat = ({ fetchAgain, setFetchAgain }) => {
         if (!notification.includes(newMessageRecieved)) {
           setNotification([newMessageRecieved, ...notification]);
         }
+        setNewNotif(!newNotif);
         setFetchAgain(!fetchAgain);
       } else {
         console.log("selecteChatCompare: ", selectedChatCompare);
@@ -132,7 +140,14 @@ const Chat = ({ fetchAgain, setFetchAgain }) => {
     setTyping(false);
     console.log("paws Off!");
   };
-  const debouncedPawsHandler = useCallback(debounce(pawsHandler, 2000), []);
+
+  const debouncedFunctionRef = useRef();
+  debouncedFunctionRef.current = () => pawsHandler();
+
+  const debouncedPawsOff = useCallback(
+    debounce((...args) => debouncedFunctionRef.current(...args), 2000),
+    []
+  );
 
   const typingHandler = (e) => {
     setNewMessage(e.target.value);
@@ -146,7 +161,7 @@ const Chat = ({ fetchAgain, setFetchAgain }) => {
       socket.emit("typing", selectedChat._id);
     }
 
-    debouncedPawsHandler();
+    debouncedPawsOff();
   };
 
   return (
