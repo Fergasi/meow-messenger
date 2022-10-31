@@ -6,7 +6,12 @@ import { GiphyFetch } from "@giphy/js-fetch-api";
 
 const giphyFetch = new GiphyFetch("lRW73c5GgjKoZUKlta1yXYVl1GvlyJSq");
 
-export const GiphyCarousel = ({ gifSearch, sendGif, setOpenGiphy }) => {
+export const GiphyCarousel = ({
+  gifSearch,
+  sendGif,
+  setOpenGiphy,
+  setGifSearch,
+}) => {
   const fetchGifs = (offset) =>
     giphyFetch.search(gifSearch ? gifSearch : "cats", { offset, limit: 10 });
   return (
@@ -21,6 +26,7 @@ export const GiphyCarousel = ({ gifSearch, sendGif, setOpenGiphy }) => {
         onGifClick={(e) => {
           sendGif(e.images.original.url);
           setOpenGiphy(false);
+          setGifSearch("");
         }}
       />
     </div>

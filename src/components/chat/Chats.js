@@ -102,13 +102,16 @@ const Chats = ({ fetchAgain, setFetchAgain }) => {
                     ? getSender(user, chat.users)
                     : chat.chatName}
                 </span>
-                {chat.latestMessage && (
-                  <p>
-                    {chat.latestMessage.content.length > 50
-                      ? chat.latestMessage.content.substring(0, 51) + "..."
-                      : chat.latestMessage.content}
-                  </p>
-                )}
+                {chat.latestMessage &&
+                  (chat.latestMessage.content.includes("giphy.com/media") ? (
+                    <p>GIF</p>
+                  ) : (
+                    <p>
+                      {chat.latestMessage.content.length > 50
+                        ? chat.latestMessage.content.substring(0, 51) + "..."
+                        : chat.latestMessage.content}
+                    </p>
+                  ))}
               </div>
             </div>
           ))}

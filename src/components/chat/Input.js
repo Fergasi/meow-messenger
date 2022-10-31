@@ -67,6 +67,7 @@ const Input = ({
             gifSearch={gifSearch}
             sendGif={sendGif}
             setOpenGiphy={setOpenGiphy}
+            setGifSearch={setGifSearch}
           />
         </div>
       )}
