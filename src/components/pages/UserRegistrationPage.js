@@ -31,8 +31,6 @@ const UserRegistrationPage = () => {
     profilePicture: "",
   });
 
-  console.log(userRegistrationForm);
-
   const handleChange = (prop) => (event) => {
     setUserRegistrationForm({
       ...userRegistrationForm,
@@ -93,7 +91,7 @@ const UserRegistrationPage = () => {
             ...userRegistrationForm,
             profilePicture: data.url.toString(),
           });
-          console.log("pic Url: ", data.url.toString());
+
           setPicLoading(false);
           return;
         })

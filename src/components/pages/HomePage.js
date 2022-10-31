@@ -17,8 +17,6 @@ const HomePage = () => {
     }
   }, [user]);
 
-  console.log("test");
-
   return (
     <Layout>
       <div className='home'>

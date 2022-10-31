@@ -7,8 +7,6 @@ import { isLastMessage, isSameSender } from "../../utils/chatLogics";
 const Message = ({ message, messages, i }) => {
   const user = useSelector((state) => state.user);
 
-  console.log("user: ", user.id);
-  console.log("message.sender._id: ", message.sender._id);
   return (
     <div
       className={message.sender._id === user.id ? "message owner" : "message"}

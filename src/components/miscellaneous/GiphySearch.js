@@ -18,7 +18,6 @@ export const GiphyCarousel = ({ gifSearch, sendGif, setOpenGiphy }) => {
         noLink={true}
         key={gifSearch}
         hideAttribution={true}
-        // onGifClick={(e) => console.log(e)}
         onGifClick={(e) => {
           sendGif(e.images.original.url);
           setOpenGiphy(false);

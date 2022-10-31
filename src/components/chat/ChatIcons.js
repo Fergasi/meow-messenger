@@ -98,8 +98,6 @@ const ChatIcons = () => {
     debounceSnackbarFunc();
   }, [newNotif]);
 
-  console.log("notification: ", notification);
-
   return (
     <>
       {notification.length > 0 && (

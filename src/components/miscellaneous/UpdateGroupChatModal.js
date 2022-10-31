@@ -58,7 +58,6 @@ const UpdateGroupChatModal = ({
     if (!search) {
       return;
     }
-    console.log(selectedUsers);
 
     try {
       const { data } = await Axios.get(`/api/chat/search?search=${search}`);

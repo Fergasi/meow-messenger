@@ -40,7 +40,6 @@ const Chat = ({ fetchAgain, setFetchAgain }) => {
   } = ChatState();
   const [loading, setLoading] = useState(false);
   const [socketConnected, setSocketConnected] = useState(false);
-  console.log("SELECTEDCHAT: ", selectedChat._id);
 
   const fetchMessages = async () => {
     if (!selectedChat.users) return;
@@ -50,8 +49,6 @@ const Chat = ({ fetchAgain, setFetchAgain }) => {
 
       const { data } = await Axios.get(`/api/message/${selectedChat._id}`);
 
-      console.log("messages: ", messages);
-      console.log("its here!!!: ", data);
       setMessages(data);
       setLoading(false);
       socket.emit("join chat", selectedChat._id);
@@ -69,7 +66,6 @@ const Chat = ({ fetchAgain, setFetchAgain }) => {
       (event.key === "Enter" && newMessage) ||
       (event.type === "click" && newMessage)
     ) {
-      console.log("click activiy");
       socket.emit("stop typing", selectedChat._id);
       setTyping(false);
       try {
@@ -133,8 +129,6 @@ const Chat = ({ fetchAgain, setFetchAgain }) => {
 
   useEffect(() => {
     socket.on("message recieved", (newMessageRecieved) => {
-      console.log("message recieved: ", newMessageRecieved);
-      console.log("messagesInEffect: ", messages);
       if (
         !selectedChatCompare ||
         selectedChatCompare._id !== newMessageRecieved.chat._id
@@ -145,7 +139,6 @@ const Chat = ({ fetchAgain, setFetchAgain }) => {
         setNewNotif(!newNotif);
         setFetchAgain(!fetchAgain);
       } else {
-        console.log("selecteChatCompare: ", selectedChatCompare);
         setMessages([...messages, newMessageRecieved]);
         setFetchAgain(!fetchAgain); //might be where random bug lives
       }
@@ -161,7 +154,6 @@ const Chat = ({ fetchAgain, setFetchAgain }) => {
   const pawsHandler = () => {
     socket.emit("stop typing", selectedChat._id);
     setTyping(false);
-    console.log("paws Off!");
   };
 
   const debouncedFunctionRef = useRef();
