@@ -58,8 +58,6 @@ const Sidebar = ({ fetchAgain, setFetchAgain }) => {
         setChats([data, ...chats]);
       }
 
-      console.log("data: ", data);
-
       setSelectedChat(data);
       setChatLoading(false);
     } catch (e) {

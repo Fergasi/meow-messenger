@@ -149,9 +149,13 @@ const Messages = ({ messages }) => {
                   >
                     {format(new Date(message.createdAt), "H:mma")}
                   </span>
-                  <span style={{ fontSize: "medium", fontWeight: "400" }}>
-                    {message.content}
-                  </span>
+                  {message.content.includes("giphy.com/media") ? (
+                    <img src={message.content} style={{ width: "100%" }}></img>
+                  ) : (
+                    <span style={{ fontSize: "medium", fontWeight: "400" }}>
+                      {message.content}
+                    </span>
+                  )}
                 </p>
               </div>
             </div>

@@ -113,11 +113,13 @@ const ChatIcons = () => {
             sx={{
               backgroundColor: "#b26362",
               overflow: "hidden",
+              padding: "0px 10px",
             }}
             message={
               <>
                 <strong
                   style={{
+                    maxWidth: "90%",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                   }}
@@ -129,12 +131,18 @@ const ChatIcons = () => {
                 </strong>
                 <div
                   style={{
-                    width: "280px",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                   }}
                 >
-                  {`${notification[0].content}`}
+                  {notification[0].content.includes("giphy.com/media") ? (
+                    <img
+                      src={notification[0].content}
+                      style={{ height: "50px", marginTop: "4px" }}
+                    ></img>
+                  ) : (
+                    <>{notification[0].content}</>
+                  )}
                 </div>
               </>
             }

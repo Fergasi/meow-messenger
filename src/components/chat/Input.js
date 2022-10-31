@@ -10,9 +10,16 @@ import { GiphyCarousel } from "../miscellaneous/GiphySearch";
 import GifIcon from "@mui/icons-material/Gif";
 import GifBoxIcon from "@mui/icons-material/GifBox";
 
-const Input = ({ sendMessage, typingHandler, newMessage, setNewMessage }) => {
+const Input = ({
+  sendMessage,
+  typingHandler,
+  newMessage,
+  setNewMessage,
+  sendGif,
+}) => {
   const [openEmoji, setOpenEmoji] = useState(false);
   const [openGiphy, setOpenGiphy] = useState(false);
+  const [gifSearch, setGifSearch] = useState("");
   return (
     <div style={{ width: "100%" }}>
       {openEmoji && (
@@ -38,7 +45,6 @@ const Input = ({ sendMessage, typingHandler, newMessage, setNewMessage }) => {
             display: "flex",
             width: "100%",
             marginTop: "-235px",
-            display: "flex",
             flexDirection: "column",
             paddingBottom: "0px",
           }}
@@ -53,10 +59,15 @@ const Input = ({ sendMessage, typingHandler, newMessage, setNewMessage }) => {
               borderTopRightRadius: "5px",
               paddingLeft: "10px",
             }}
-            placeholder='Gif search'
+            value={gifSearch}
+            onChange={(e) => setGifSearch(e.target.value)}
+            placeholder='Search gifs'
           ></input>
-
-          <GiphyCarousel />
+          <GiphyCarousel
+            gifSearch={gifSearch}
+            sendGif={sendGif}
+            setOpenGiphy={setOpenGiphy}
+          />
         </div>
       )}
       <div className='input'>

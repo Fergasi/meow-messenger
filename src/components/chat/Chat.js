@@ -40,7 +40,7 @@ const Chat = ({ fetchAgain, setFetchAgain }) => {
   } = ChatState();
   const [loading, setLoading] = useState(false);
   const [socketConnected, setSocketConnected] = useState(false);
-  console.log("SELECTEDCHAT: ", selectedChat);
+  console.log("SELECTEDCHAT: ", selectedChat._id);
 
   const fetchMessages = async () => {
     if (!selectedChat.users) return;
@@ -91,6 +91,25 @@ const Chat = ({ fetchAgain, setFetchAgain }) => {
     }
   };
 
+  const sendGif = async (gif) => {
+    try {
+      const { data } = await Axios.post("/api/message", {
+        content: gif,
+        chatId: selectedChat._id,
+      });
+
+      setNewMessage("");
+      setMessages([...messages, data]);
+      socket.emit("new message", data);
+      setFetchAgain(!fetchAgain);
+    } catch (e) {
+      setError({ status: true, message: "Failed to send messages" });
+      setTimeout(() => {
+        setError({ status: false, message: "" });
+      }, 5000);
+    }
+  };
+
   useEffect(() => {
     socket = io(ENDPOINT);
     socket.emit("setup", user.id);
@@ -105,9 +124,7 @@ const Chat = ({ fetchAgain, setFetchAgain }) => {
 
   useEffect(() => {
     socket.on("typing", (roomId) => {
-      console.log("roomId: ", roomId);
-      console.log("selectedChatId: ", selectedChat);
-      if (selectedChat._id === roomId) {
+      if (roomId === selectedChatCompare._id) {
         setIsTyping(true);
       }
     });
@@ -134,6 +151,12 @@ const Chat = ({ fetchAgain, setFetchAgain }) => {
       }
     });
   });
+
+  const handleIncomingTyping = (roomId) => {
+    if (roomId === selectedChat._id) {
+      setIsTyping(true);
+    }
+  };
 
   const pawsHandler = () => {
     socket.emit("stop typing", selectedChat._id);
@@ -238,6 +261,7 @@ const Chat = ({ fetchAgain, setFetchAgain }) => {
             typingHandler={typingHandler}
             newMessage={newMessage}
             setNewMessage={setNewMessage}
+            sendGif={sendGif}
           />
         </>
       ) : (
