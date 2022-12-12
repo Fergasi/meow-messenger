@@ -47,7 +47,7 @@ const Chat = ({ fetchAgain, setFetchAgain }) => {
     try {
       setLoading(true);
 
-      const { data } = await Axios.get(`/api/message/${selectedChat._id}`);
+      const { data } = await Axios.get(`/message/${selectedChat._id}`);
 
       setMessages(data);
       setLoading(false);
@@ -69,7 +69,7 @@ const Chat = ({ fetchAgain, setFetchAgain }) => {
       socket.emit("stop typing", selectedChat._id);
       setTyping(false);
       try {
-        const { data } = await Axios.post("/api/message", {
+        const { data } = await Axios.post("/message", {
           content: newMessage,
           chatId: selectedChat._id,
         });
@@ -89,7 +89,7 @@ const Chat = ({ fetchAgain, setFetchAgain }) => {
 
   const sendGif = async (gif) => {
     try {
-      const { data } = await Axios.post("/api/message", {
+      const { data } = await Axios.post("/message", {
         content: gif,
         chatId: selectedChat._id,
       });

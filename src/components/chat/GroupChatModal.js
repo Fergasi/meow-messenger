@@ -55,7 +55,7 @@ const GroupChatModal = ({ children }) => {
     }
 
     try {
-      const { data } = await Axios.get(`/api/chat/search?search=${search}`);
+      const { data } = await Axios.get(`/chat/search?search=${search}`);
       cb(data);
     } catch (e) {
       setError({ status: true, message: "Network Error" });
@@ -113,7 +113,7 @@ const GroupChatModal = ({ children }) => {
     try {
       setLoading(true);
 
-      const { data } = await Axios.post("api/chat/group", {
+      const { data } = await Axios.post("/chat/group", {
         name: groupChatName,
         users: JSON.stringify(selectedUsers.map((u) => u._id)),
       });

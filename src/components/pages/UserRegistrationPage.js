@@ -44,7 +44,7 @@ const UserRegistrationPage = () => {
     setError(undefined);
 
     try {
-      const response = await Axios.post("api/user/register-user", {
+      const response = await Axios.post("/user/register-user", {
         ...userRegistrationForm,
       });
 

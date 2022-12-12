@@ -28,7 +28,7 @@ const Sidebar = ({ fetchAgain, setFetchAgain }) => {
       return;
     }
     try {
-      const { data } = await Axios.get(`/api/chat/search?search=${search}`);
+      const { data } = await Axios.get(`/chat/search?search=${search}`);
       cb(data);
     } catch (e) {
       setError({ status: true, message: "Network Error" });
@@ -52,7 +52,7 @@ const Sidebar = ({ fetchAgain, setFetchAgain }) => {
     try {
       setChatLoading(true);
 
-      const { data } = await Axios.post("/api/chat", { userId });
+      const { data } = await Axios.post("/chat", { userId });
 
       if (!chats.find((c) => c._id === data._id)) {
         setChats([data, ...chats]);

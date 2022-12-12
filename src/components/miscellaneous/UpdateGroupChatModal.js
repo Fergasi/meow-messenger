@@ -60,7 +60,7 @@ const UpdateGroupChatModal = ({
     }
 
     try {
-      const { data } = await Axios.get(`/api/chat/search?search=${search}`);
+      const { data } = await Axios.get(`/chat/search?search=${search}`);
       cb(data);
     } catch (e) {
       setError({ status: true, message: "Network Error" });
@@ -86,7 +86,7 @@ const UpdateGroupChatModal = ({
 
     try {
       setRenameLoading(true);
-      const { data } = await Axios.put("/api/chat/rename", {
+      const { data } = await Axios.put("/chat/rename", {
         chatId: selectedChat._id,
         chatName: groupChatName,
       });
@@ -129,7 +129,7 @@ const UpdateGroupChatModal = ({
     try {
       setLoading(true);
 
-      const { data } = await Axios.put("/api/chat/groupadd", {
+      const { data } = await Axios.put("/chat/groupadd", {
         chatId: selectedChat._id,
         userId: user1._id,
       });
@@ -165,7 +165,7 @@ const UpdateGroupChatModal = ({
     try {
       setLoading(true);
 
-      const { data } = await Axios.put("/api/chat/groupremove", {
+      const { data } = await Axios.put("/chat/groupremove", {
         chatId: selectedChat._id,
         userId: user1._id,
       });
@@ -190,7 +190,7 @@ const UpdateGroupChatModal = ({
     try {
       setLoading(true);
 
-      const { data } = await Axios.put("/api/chat/groupremove", {
+      const { data } = await Axios.put("/chat/groupremove", {
         chatId: selectedChat._id,
         userId: userSelf.id,
       });

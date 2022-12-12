@@ -24,7 +24,7 @@ const Chats = ({ fetchAgain, setFetchAgain }) => {
 
   const fetchChats = async () => {
     try {
-      const { data } = await Axios.get("/api/chat/");
+      const { data } = await Axios.get("/chat/");
 
       setChats(data);
     } catch (e) {

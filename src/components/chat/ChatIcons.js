@@ -61,7 +61,7 @@ const ChatIcons = () => {
 
   const onLogOut = async () => {
     try {
-      await Axios.get("api/user/sign-out");
+      await Axios.get("/user/sign-out");
       setSelectedChat({});
       dispatch(signOut());
     } catch (e) {

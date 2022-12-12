@@ -30,7 +30,7 @@ const LoginPage = () => {
   const onLogin = async () => {
     try {
       //call the back end with the login credentials
-      const response = await Axios.post("api/user/sign-in", {
+      const response = await Axios.post("/user/sign-in", {
         credentials: signInForm,
       });
 
@@ -49,7 +49,7 @@ const LoginPage = () => {
 
   const onLogOut = async () => {
     try {
-      await Axios.get("api/user/sign-out");
+      await Axios.get("/user/sign-out");
       dispatch(signOut());
     } catch (e) {
       setError("Network error, please try again");
