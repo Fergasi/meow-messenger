@@ -17,7 +17,7 @@ import Axios from "../../utils/Axios";
 import { CircularProgress } from "@mui/material";
 import { debounce } from "lodash";
 import io from "socket.io-client";
-const ENDPOINT = "https://fergasi.com";
+const ENDPOINT = "https://127.0.0.1:3020";
 var socket, selectedChatCompare;
 
 const Chat = ({ fetchAgain, setFetchAgain }) => {
